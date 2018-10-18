@@ -37,21 +37,34 @@ def network_choice():
     return network
 
 
-def ip_range():
-    network = 'wlp4s0'
-    # gateway_ip = netifaces.gateways()[network]
-    print(netifaces.gateways())
-    # print(f'{gateway_ip}')
-    # data = netifaces.ifaddresses(network)[2]
-    # for info in data:
-    #     ip = info.get("addr", "Ip Not Found")
+def network_range(network="wlp4s0"):
+    data = netifaces.ifaddresses(network)[2]
+    for info in data:
+        ip = info.get("addr", "Ip Not Found")
 
+    print(f"\n\tNetwork :: {network}")
+    print(f"\tIp :: {ip}\n")
+
+    input_network_range = input("Enter the Ip range you wish to scan: ")
+    return input_network_range
 
 
 def scan_network():
-    # network = network_choice()
-    network = 'wlp4s0'
-    ip_range()
+    network = network_choice()
+    range_to_scan = network_range()
+    print(f"\n\tScanning range {range_to_scan} in {network}\n")
+    hosts_list = nmap_host_discovery(range_to_scan)
+    return hosts_list
+    # nmap stuff
+
+def nmap_host_discovery(range_to_scan):
+    nm = nmap.PortScanner()
+    nm.scan(hosts=range_to_scan, arguments='-sP')
+    hosts_list = [(x, nm[x]['status']['state']) for x in nm.all_hosts()]
+    for host, status in hosts_list:
+        print(f'\tHost :: {host} \t Status :: {status}')
+
+    return hosts_list
 
 def main():
 
