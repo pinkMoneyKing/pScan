@@ -64,14 +64,46 @@ def nmap_host_discovery(range_to_scan):
     for host, status in hosts_list:
         print(f'\tHost :: {host} \t Status :: {status}')
 
+    print(f"\n")
     return hosts_list
 
+def user_input(message):
+    message_response = input(f'{message}')
+    return message_response
+
+def nmap_command(ip, arguments):
+    nm = nmap.PortScanner()
+    nmap_scan = nm.scan(ip, arguments=arguments)
+    print(nmap_scan)
+    return nmap_scan
+
+
+def nmap_ip_scan(hosts_list):
+    print('\n\tWhich ip would you like to scan')
+    for host, status in hosts_list:
+        print(f'\tHost :: {host} \t Status :: {status}')
+    ip_target = input('> ')
+    nmap_args = input('Please input nmap scan arguments: ')
+    print(f'Scanning Ip :: {ip_target}')
+    nmap_command(ip_target, nmap_args)
+
 def main():
-
-    print('/n/tType "quit" to quit')
-    scan_network()
-
-
+    print('\n\tSome Opening Message')
+    # scan_network()
+    print('\n\tType "quit" to quit')
+    user_input = 'start'
+    while user_input != 'quit':
+        user_input = input(f'\nWhat would like to do? ')
+        if user_input == 'quit':
+            print("\n\tThanks for Scanning!")
+        elif user_input == 'network scan':
+            hosts_list = scan_network()
+        elif user_input == 'ip scan':
+            nmap_ip_scan(hosts_list)
+        elif user_input == 'help':
+            print('network scan, ip scan, quit')
+        else:
+            user_input = input(f'\nWhat would like to do? ')
 
 
 main()
